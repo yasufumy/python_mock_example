@@ -9,6 +9,7 @@ class Trainer:
         self.classes = np.unique(y)
         self.batch_size = batch_size
         self.epoch = epoch
+        self.order = np.random.permutation(len(x))
 
     def run(self):
         batch_size = self.batch_size
@@ -16,7 +17,7 @@ class Trainer:
         y = self.y
         classes = self.classes
         model = self.model
-        order = np.random.permutation(len(x))
+        order = self.order
 
         for _ in range(self.epoch):
             for i in range(0, len(x), batch_size):

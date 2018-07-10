@@ -20,11 +20,12 @@ class TestRandomCSVReader(TestCase):
 
         self.filename = '/path/to/target.csv'
         self.reader = RandomCSVReader(self.filename)
+        self.num_lines = len(lines)
 
     def test_init(self):
         self.mock_open.assert_called_once_with(self.filename)
         self.mock_open.return_value.readlines.assert_called_once()
-        self.assertEqual(self.reader._total, 2)
+        self.assertEqual(self.reader._total, self.num_lines)
         self.assertEqual(self.reader._csvfile, self.filename)
 
     def test_getitem(self):
@@ -32,10 +33,11 @@ class TestRandomCSVReader(TestCase):
         for i in range(len(self.reader)):
             self.assertListEqual(self.reader[i], expected[i])
 
-        self.assertListEqual(self.reader[0:5], expected[0:5])
-        self.assertListEqual(self.reader[0:], expected[0:])
-        self.assertListEqual(self.reader[:5], expected[:5])
-        self.assertListEqual(self.reader[:5:2], expected[:5:2])
+        slices = [slice(0, 5), slice(0), slice(None, 5), slice(None, 5, 2)]
+
+        for slice_ in slices:
+            print(self.reader[slice_], expected[slice_])
+            self.assertListEqual(self.reader[slice_], expected[slice_])
 
     def tearDown(self):
         patch.stopall()

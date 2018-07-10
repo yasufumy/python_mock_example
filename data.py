@@ -5,26 +5,18 @@ import linecache
 class RandomCSVReader:
     def __init__(self, csvfile):
         with open(csvfile) as f:
-            self._total = len(f.readlines()) - 1
+            self._total = len(f.readlines())
         self._csvfile = csvfile
 
     def __len__(self):
         return self._total
 
     def __getitem__(self, index):
-        def getline(i):
-            return linecache.getline(self._csvfile, i + 1)
-
         if isinstance(index, slice):
-            stop = len(self) + 1
-            lines = [getline(i)
-                     for i in range(index.start or 0,
-                                    min(index.stop or stop, stop),
-                                    index.step or 1)]
-            data = [row for row in csv.reader(lines)]
+            start, stop, step = index.indices(len(self))
+            return [self._get_line(i) for i in range(start, stop, step)]
         else:
-            if index > len(self):
-                raise IndexError
-            data = next(csv.reader([getline(index)]))
+            return self._get_line(index)
 
-        return data
+    def _get_line(self, i):
+        return next(csv.reader([linecache.getline(self._csvfile, i + 1)]))
