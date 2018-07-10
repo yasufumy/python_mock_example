@@ -36,7 +36,6 @@ class TestRandomCSVReader(TestCase):
         slices = [slice(0, 5), slice(0), slice(None, 5), slice(None, 5, 2)]
 
         for slice_ in slices:
-            print(self.reader[slice_], expected[slice_])
             self.assertListEqual(self.reader[slice_], expected[slice_])
 
     def tearDown(self):
