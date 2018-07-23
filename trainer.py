@@ -21,7 +21,8 @@ class Trainer:
 
         for _ in range(self.epoch):
             for i in range(0, len(x), batch_size):
-                x_batch, y_batch = x[order[i:i+batch_size]], y[order[i:i+batch_size]]
+                indices = order[i:i+batch_size]
+                x_batch, y_batch = x[indices], y[indices]
                 model.partial_fit(x_batch, y_batch, classes=classes)
             np.random.shuffle(order)
 
